@@ -1,0 +1,524 @@
+@font-face {
+    font-family: 'Gotha Regular';
+    src: url('Gotha-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    /* --- НОВЫЕ ЦВЕТА ПО ЗАПРОСУ --- */
+    --correct: #6aaa64;    /* Светло-зеленый (Правильная буква) */
+    --present: #f57c00;    /* Насыщенный оранжевый (Буква есть, но не там) */
+    --absent: #e57373;     /* Светло-красный (Буквы нет) */
+    
+    --key-bg: #d3d6da;     /* Цвет обычных кнопок */
+    --background-main: #ffffff;
+    --text-color: #1a1a1b;
+    --border-color: #d3d6da;
+    --filled-border: #878a8c;
+    --modal-overlay: rgba(0, 0, 0, 0.5);
+    
+    /* Кнопка старт теперь использует цвет правильной буквы */
+    --btn-primary: var(--correct); 
+    --btn-primary-hover: #5a9155; /* Чуть темнее для эффекта наведения */
+    --btn-danger: #d32f2f;        /* Более насыщенный красный для кнопки "Сдаться" */
+    --btn-danger-hover: #b71c1c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background-main);
+    color: var(--text-color);
+    font-family: 'Gotha Regular', 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    margin: 0;
+    padding: 10px 0;
+    overflow-x: hidden;
+}
+
+/* --- ЗАГОЛОВОК --- */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    flex-grow: 1;
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 10px 0 20px 0;
+    letter-spacing: 0.05em;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    width: 90%;
+}
+
+/* --- НАСТРОЙКИ --- */
+#settings {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #f3f3f3;
+    border-radius: 8px;
+    width: 90%;
+    font-size: 14px;
+}
+
+.settings-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+select {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.buttons-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+/* Кнопки управления игрой */
+#start-game-btn, #give-up-btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    transition: opacity 0.2s, background-color 0.2s;
+    color: white;
+}
+
+#start-game-btn {
+    background-color: var(--btn-primary);
+}
+
+#start-game-btn:hover {
+    background-color: var(--btn-primary-hover);
+}
+
+#give-up-btn {
+    background-color: var(--btn-danger);
+}
+
+#give-up-btn:hover {
+    background-color: var(--btn-danger-hover);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- ТАЙМЕР И СООБЩЕНИЯ --- */
+#timer-display {
+    font-variant-numeric: tabular-nums;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+#message-area {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    z-index: 1000;
+    font-weight: bold;
+    font-size: 14px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* --- ИГРОВОЕ ПОЛЕ --- */
+#game-board {
+    display: grid;
+    grid-gap: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 350px;
+    justify-content: center;
+    margin-bottom: auto;
+}
+
+#game-board.small-tiles .row {
+    gap: 3px;
+}
+#game-board.small-tiles .tile {
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+}
+
+.row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: 5px;
+}
+
+.tile {
+    width: 52px;
+    height: 52px;
+    border: 2px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    font-weight: bold;
+    text-transform: uppercase;
+    user-select: none;
+    transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+    background-color: var(--background-main);
+}
+
+.tile[data-state='active'] {
+    border-color: var(--filled-border);
+    animation: pop 0.1s;
+}
+
+/* Цвета состояний плиток */
+.tile.correct {
+    background-color: var(--correct);
+    color: white;
+    border-color: var(--correct);
+}
+.tile.present {
+    background-color: var(--present);
+    color: white;
+    border-color: var(--present);
+}
+.tile.absent {
+    background-color: var(--absent);
+    color: white;
+    border-color: var(--absent);
+}
+
+/* --- КЛАВИАТУРА --- */
+#keyboard {
+    width: 100%;
+    max-width: 500px;
+    padding: 0 8px 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.keyboard-row {
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+    gap: 4px;
+}
+
+#keyboard button {
+    font-family: inherit;
+    font-weight: bold;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    height: 58px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--key-bg);
+    color: var(--text-color);
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 14px;
+    touch-action: manipulation;
+    transition: background-color 0.15s ease, opacity 0.2s;
+}
+
+#keyboard button.wide-button {
+    flex: 1.5;
+    font-size: 12px;
+}
+
+#keyboard button.correct { background-color: var(--correct); color: white; }
+#keyboard button.present { background-color: var(--present); color: white; }
+#keyboard button.absent { background-color: var(--absent); color: white; }
+
+#keyboard button:hover {
+    opacity: 0.9;
+}
+
+/* --- МОДАЛЬНОЕ ОКНО --- */
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: var(--modal-overlay);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.modal.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+    position: relative;
+}
+
+.type-modal-content {
+    border: 4px solid var(--correct);
+    background-color: #f0f9f0;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+}
+.close-button:hover { color: black; }
+
+.restart-button {
+    margin-top: 20px;
+    background-color: var(--btn-primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.restart-button:hover {
+    background-color: var(--btn-primary-hover);
+}
+
+/* --- СТАТИСТИКА (СЧЕТЧИК) --- */
+#stats-counter {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    background: rgba(255,255,255,0.9);
+    padding: 5px 10px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+}
+
+/* Анимации */
+@keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    40% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.shake {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.flip {
+    transform: rotateX(360deg);
+    transition: transform 0.6s ease;
+}
+
+.bump {
+    animation: bump 0.3s ease-out;
+}
+@keyframes bump {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* --- АДАПТИВНОСТЬ --- */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+    
+    .tile {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+    
+    #game-board.small-tiles .tile {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+
+    #keyboard {
+        padding-bottom: 5px;
+    }
+
+    #keyboard button {
+        height: 50px;
+        font-size: 12px;
+    }
+    
+    .keyboard-row {
+        gap: 3px;
+    }
+}
+
+@media (max-height: 600px) {
+    .container {
+        justify-content: start;
+    }
+    h1 {
+        display: none;
+    }
+    #settings {
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+    .tile {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    #keyboard button {
+        height: 45px;
+    }
+}
+/* --- БЛОК СОЦСЕТЕЙ --- */
+.social-links {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.social-item {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s, opacity 0.3s, background-color 0.3s;
+    opacity: 0.6; /* Делаем полупрозрачными, чтобы не отвлекали */
+}
+
+.social-item:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Цвета брендов */
+.social-item.tg {
+    background-color: #0088cc;
+}
+
+.social-item.tt {
+    background-color: #010101;
+}
+
+.social-item.inst {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+}
+.modal.visible {
+    display: flex !important;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+/* Адаптация для мобилок: переносим в ряд в самый низ, если экран маленький */
+@media (max-width: 600px) {
+    .social-links {
+        position: relative;
+        bottom: 0;
+        left: 0;
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 20px;
+        padding-bottom: 20px;
+    }
+    
+    .social-item {
+        width: 40px;
+        height: 40px;
+        opacity: 0.8;
+    }
+}

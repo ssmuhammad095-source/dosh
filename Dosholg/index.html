@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нохчийн Wordle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="stats-counter">
+        <span>✨ <span id="total-stars-count">0</span></span>
+        <span>🛡️ <span id="total-types-count">0</span></span>
+    </div>
+    <div class="container">
+        <h1>Дошолг - Нохчийн Wordle ⚔️</h1>
+
+        <div id="settings">
+            <div class="settings-row">
+                <div>
+                    <label for="word-length-select">Дешан дохалла харжа:</label>
+                    <select id="word-length-select">
+                        <option value="2-4">2-4</option>
+                        <option value="5-7">5-7</option>
+                        <option value="8-12">8-12</option>
+                        <option value="13+">13+</option> 
+                        <option value="random" selected>Ларамаза</option> 
+                    </select>
+                </div>
+                <div>
+                    <label for="difficulty-select">Чолхалла:</label>
+                    <select id="difficulty-select">
+                        <option value="easy" selected>Атта</option>
+                        <option value="hard">Хала</option>
+                        <option value="combined">Вовшахтоьхна</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="buttons-row">
+                <button id="start-game-btn">Ловзар доладан</button>
+                <button id="give-up-btn" class="hidden">Жоп гайта (Йолла)</button>
+            </div>
+        </div>
+        <div class="social-links">
+    <a href="https://t.me/xexodev" target="_blank" class="social-item tg" title="Telegram">
+        <span>TG</span>
+    </a>
+    <a href="https://www.tiktok.com/@m.xexo" target="_blank" class="social-item tt" title="TikTok">
+        <span>TT</span>
+    </a>
+    <a href="https://www.instagram.com/m.xex0" target="_blank" class="social-item inst" title="Instagram">
+        <span>INST</span>
+    </a>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+        <div id="timer-display">Хан: 0 с</div>
+
+        <div id="message-area" class="hidden"></div>
+        
+        <div id="game-board">
+        </div>
+
+        <audio id="type-sound" src="type.mp3" preload="auto"></audio>
+        <audio id="win-sound" src="win.mp3" preload="auto"></audio>
+        <audio id="lose-sound" src="lose.mp3" preload="auto"></audio>
+
+        <div id="keyboard">
+            <div class="keyboard-row">
+                <button data-key="Й">Й</button>
+                <button data-key="Ц">Ц</button>
+                <button data-key="У">У</button>
+                <button data-key="К">К</button>
+                <button data-key="Е">Е</button>
+                <button data-key="Н">Н</button>
+                <button data-key="Г">Г</button>
+                <button data-key="Ш">Ш</button>
+                <button data-key="Щ">Щ</button>
+                <button data-key="З">З</button>
+                <button data-key="Х">Х</button>
+                <button data-key="Ъ">Ъ</button>
+            </div>
+            <div class="keyboard-row">
+                <button data-key="Ф">Ф</button>
+                <button data-key="Ы">Ы</button>
+                <button data-key="В">В</button>
+                <button data-key="А">А</button>
+                <button data-key="П">П</button>
+                <button data-key="Р">Р</button>
+                <button data-key="О">О</button>
+                <button data-key="Л">Л</button>
+                <button data-key="Д">Д</button>
+                <button data-key="Ж">Ж</button>
+                <button data-key="Э">Э</button>
+            </div>
+            <div class="keyboard-row">
+                <button data-key="Delete" class="wide-button" id="delete-key-color">←</button>
+                <button data-key="Ч">Ч</button>
+                <button data-key="С">С</button>
+                <button data-key="М">М</button>
+                <button data-key="И">И</button>
+                <button data-key="Т">Т</button>
+                <button data-key="Ь">Ь</button>
+                <button data-key="Б">Б</button>
+                <button data-key="I">Ӏ</button>
+                <button data-key="Enter" class="wide-button" id="enter-key-color">Чудаккха</button>
+            </div>
+        </div>
+    
+        <div id="results-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2 id="modal-title"></h2>
+                <p><strong>Хаьржина дош:</strong> <span id="modal-secret-word-display"></span></p>
+                <p><strong>Мел дош чудаьккхина:</strong> <span id="modal-attempts"></span></p> 
+                <p><strong>Седарчий баьхна:</strong> <span id="modal-stars-display"></span></p>
+                <p><strong>Йайна хан:</strong> <span id="modal-time"></span></p>
+                
+                <button id="restart-modal-btn" class="restart-button">Керла ловзар</button>
+            </div>
+        </div>
+        
+        <div id="type-win-modal" class="modal hidden">
+            <div class="modal-content type-modal-content"> 
+                <span class="close-button">&times;</span>
+                <h2>Хьуна карийна ТАЙП!</h2>
+                <p><strong>Хаьржина дош:</strong> <span id="type-word-display"></span></p>
+                <p><strong>Мел дош чудаьккхина:</strong> <span id="type-attempts"></span></p> 
+                <p><strong>Гулдина тайпанаш:</strong> <span id="type-count-display">0</span></p>
+                <p><strong>Седарчий баьхна:</strong> <span id="type-stars-display"></span></p>
+                <p><strong>Йайна хан:</strong> <span id="type-time"></span></p>
+                
+                <button id="type-restart-btn" class="restart-button">Йуха а</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
