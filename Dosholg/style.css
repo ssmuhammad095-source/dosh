@@ -80,12 +80,52 @@ h1 {
     font-size: 13px;
 }
 
-.settings-row {
+.settings-main-row {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.setting-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 10px;
+    width: 100%;
+}
+
+.setting-group.full-width {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+/* Стили чекбоксов */
+.checkbox-group {
+    display: flex;
+    gap: 5px;
     flex-wrap: wrap;
     width: 100%;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    user-select: none;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.checkbox-label input {
+    margin-right: 5px;
+    cursor: pointer;
 }
 
 select {
@@ -95,12 +135,15 @@ select {
     font-family: inherit;
     font-size: 14px;
     background: white;
+    width: 100%; /* На мобилках удобнее */
 }
 
 .buttons-row {
     display: flex;
     gap: 10px;
     margin-top: 5px;
+    width: 100%;
+    justify-content: center;
 }
 
 button {
@@ -118,12 +161,45 @@ button {
     font-size: 12px;
     transition: opacity 0.2s;
     color: white;
+    flex: 1;
 }
 
 #start-game-btn { background-color: var(--btn-primary); }
 #give-up-btn { background-color: var(--btn-danger); }
 
 .hidden { display: none !important; }
+
+/* --- СОЦСЕТИ (ВСТРОЕННЫЕ) --- */
+.social-links-inline {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 5px;
+    border-top: 1px solid #ddd;
+    width: 100%;
+    justify-content: center;
+}
+
+.social-item {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    opacity: 0.8;
+    transition: transform 0.2s, opacity 0.2s;
+}
+.social-item:hover { opacity: 1; }
+
+.social-item.tg { background-color: #0088cc; }
+.social-item.tt { background-color: #010101; }
+.social-item.inst { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%); }
+
 
 /* --- ТАЙМЕР И СООБЩЕНИЯ --- */
 #timer-display {
@@ -419,36 +495,6 @@ button {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* --- СОЦСЕТИ --- */
-.social-links {
-    position: fixed;
-    bottom: 15px;
-    left: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    z-index: 100;
-}
-
-.social-item {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    color: white;
-    font-size: 9px;
-    font-weight: bold;
-    opacity: 0.7;
-    transition: transform 0.2s, opacity 0.2s;
-}
-
-.social-item.tg { background-color: #0088cc; }
-.social-item.tt { background-color: #010101; }
-.social-item.inst { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%); }
-
 /* --- АНИМАЦИИ --- */
 @keyframes pop {
     0% { transform: scale(0.8); opacity: 0; }
@@ -499,15 +545,6 @@ button {
     }
 
     #keyboard button { height: 42px; font-size: 11px; }
-    
-    .social-links {
-        position: relative;
-        bottom: 0; left: 0;
-        flex-direction: row;
-        justify-content: center;
-        margin-top: 10px;
-        width: 100%;
-    }
 }
 
 @media (max-height: 600px) {

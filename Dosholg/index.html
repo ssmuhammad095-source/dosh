@@ -16,18 +16,30 @@
         <h1>Дошолг ⚔️</h1>
 
         <div id="settings">
-            <div class="settings-row">
-                <div>
-                    <label for="word-length-select">Дешан дохалла:</label>
-                    <select id="word-length-select">
-                        <option value="2-4">2-4</option>
-                        <option value="5-7">5-7</option>
-                        <option value="8-12">8-12</option>
-                        <option value="13+">13+</option> 
-                        <option value="random" selected>Ларамаза</option> 
-                    </select>
+            <div class="settings-main-row">
+                <div class="setting-group full-width">
+                    <label>Дешан дохалла:</label>
+                    <div class="checkbox-group" id="length-checkboxes">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="word-length" value="2-4">
+                            <span>2-4</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="word-length" value="5-7" checked>
+                            <span>5-7</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="word-length" value="8-12">
+                            <span>8-12</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="word-length" value="13+">
+                            <span>13+</span>
+                        </label>
+                    </div>
                 </div>
-                <div>
+
+                <div class="setting-group">
                     <label for="difficulty-select">Чолхалла:</label>
                     <select id="difficulty-select">
                         <option value="easy">Атта</option>
@@ -40,6 +52,18 @@
             <div class="buttons-row">
                 <button id="start-game-btn">Ловзар доладан</button>
                 <button id="give-up-btn" class="hidden">Жоп гайта (Йолла)</button>
+            </div>
+
+            <div class="social-links-inline">
+                <a href="https://t.me/xexodev" target="_blank" class="social-item tg" title="Telegram">
+                    <span>TG</span>
+                </a>
+                <a href="https://www.tiktok.com/@m.xexo" target="_blank" class="social-item tt" title="TikTok">
+                    <span>TT</span>
+                </a>
+                <a href="https://www.instagram.com/m.xex0" target="_blank" class="social-item inst" title="Instagram">
+                    <span>INST</span>
+                </a>
             </div>
         </div>
         
@@ -132,18 +156,6 @@
                 </div>
                 <button id="close-translation-btn" class="restart-button">Кхетта</button>
             </div>
-        </div>
-
-        <div class="social-links">
-            <a href="https://t.me/xexodev" target="_blank" class="social-item tg" title="Telegram">
-                <span>TG</span>
-            </a>
-            <a href="https://www.tiktok.com/@m.xexo" target="_blank" class="social-item tt" title="TikTok">
-                <span>TT</span>
-            </a>
-            <a href="https://www.instagram.com/m.xex0" target="_blank" class="social-item inst" title="Instagram">
-                <span>INST</span>
-            </a>
         </div>
 
         <audio id="type-sound" src="type.mp3" preload="auto"></audio>

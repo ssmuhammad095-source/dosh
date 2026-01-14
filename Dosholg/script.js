@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Элементы
     const gameBoard = document.getElementById('game-board');
     const messageArea = document.getElementById('message-area');
-    const lengthSelect = document.getElementById('word-length-select');
+    // const lengthSelect = document.getElementById('word-length-select'); // Убрано
     const difficultySelect = document.getElementById('difficulty-select'); 
     const startGameBtn = document.getElementById('start-game-btn');
     const giveUpBtn = document.getElementById('give-up-btn');
@@ -40,13 +40,22 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const BANNED_KEYS = ['Я', 'Ю', 'Ё'];
 
-    // Настройки сложности
-    function getAttemptsAndLengthRange(categoryValue) {
-        if (categoryValue === '2-4') return { attempts: 5, lengthRange: [2, 3, 4] };
-        if (categoryValue === '5-7') return { attempts: 6, lengthRange: [5, 6, 7] };
-        if (categoryValue === '8-12') return { attempts: 8, lengthRange: [8, 9, 10, 11, 12] };
-        if (categoryValue === '13+') return { attempts: 10, lengthRange: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25] }; 
-        return { attempts: 6, lengthRange: [5, 6, 7] };
+    // Вспомогательная функция для получения длин слов из значений чекбоксов
+    function getLengthsFromCategory(cat) {
+        if (cat === '2-4') return [2, 3, 4];
+        if (cat === '5-7') return [5, 6, 7];
+        if (cat === '8-12') return [8, 9, 10, 11, 12];
+        if (cat === '13+') return [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+        return [];
+    }
+
+    // Расчет количества попыток в зависимости от ДЛИНЫ ВЫБРАННОГО СЛОВА
+    // Добавлено по 2 попытки к каждому уровню, как вы просили
+    function calculateAttemptsByLength(length) {
+        if (length <= 4) return 7;   // Было 5, стало 7
+        if (length <= 7) return 8;   // Было 6, стало 8
+        if (length <= 12) return 10; // Было 8, стало 10
+        return 12;                   // Было 10, стало 12
     }
 
     async function loadWords() {
@@ -97,10 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 row.appendChild(tile);
             }
-            
-            // Кнопка перевода (скрытая по умолчанию) будет добавляться сюда же
-            // но мы ее добавляем динамически при проверке, чтобы не ломать верстку пустых рядов
-
             gameBoard.appendChild(row);
         }
         
@@ -129,19 +134,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function startGame() {
         if (!CHECHEN_WORDS_DATA) return;
 
-        let category = lengthSelect.value;
-        if (category === 'random') {
-            const modes = ['2-4', '5-7', '8-12', '13+'];
-            category = modes[Math.floor(Math.random() * modes.length)];
+        // --- НОВАЯ ЛОГИКА ВЫБОРА ДЛИНЫ ЧЕРЕЗ ЧЕКБОКСЫ ---
+        const checkboxes = document.querySelectorAll('input[name="word-length"]:checked');
+        let selectedCategories = Array.from(checkboxes).map(cb => cb.value);
+
+        // Если ничего не выбрано, выбираем всё (как "Ларамаза" раньше)
+        if (selectedCategories.length === 0) {
+            selectedCategories = ['2-4', '5-7', '8-12', '13+'];
         }
 
-        const { attempts, lengthRange } = getAttemptsAndLengthRange(category);
-        MAX_ATTEMPTS = attempts; 
-        
+        // Собираем все доступные длины в один массив
+        let allowedLengths = [];
+        selectedCategories.forEach(cat => {
+            allowedLengths.push(...getLengthsFromCategory(cat));
+        });
+
+        // --- ЛОГИКА ВЫБОРА СЛОВА ---
         const difficulty = difficultySelect.value;
         let availableWords = []; 
 
-        lengthRange.forEach(len => {
+        allowedLengths.forEach(len => {
             const L = String(len);
             const easyList = (CHECHEN_WORDS_DATA.EASY[L] || []).map(w => ({...w, source: 'EASY'}));
             const hardList = (CHECHEN_WORDS_DATA.HARD[L] || []).map(w => ({...w, source: 'HARD'}));
@@ -166,10 +178,13 @@ document.addEventListener('DOMContentLoaded', () => {
         SECRET_TRANSLATION = chosenObject.translation;
         WORD_SOURCE_DIFFICULTY = chosenObject.source; 
         
+        // --- ДИНАМИЧЕСКИЙ РАСЧЕТ ПОПЫТОК ---
+        MAX_ATTEMPTS = calculateAttemptsByLength(WORD_LENGTH);
+
         IS_TYPE_WORD = SECRET_TRANSLATION && SECRET_TRANSLATION.toUpperCase().trim() === 'ТАЙП';
 
         createBoard(WORD_LENGTH);
-        showMessage(`Ловзар доладелла! Дохалла: ${WORD_LENGTH} элп.`, 1500);
+        showMessage(`Ловзар доладелла! Дохалла: ${WORD_LENGTH} элп. Попыток: ${MAX_ATTEMPTS}`, 1500);
         
         startGameBtn.classList.add('hidden');
         giveUpBtn.classList.remove('hidden');
