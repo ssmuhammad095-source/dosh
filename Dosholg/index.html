@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Нохчийн Wordle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Дошолг - Нохчийн Wordle</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,13 +11,14 @@
         <span>✨ <span id="total-stars-count">0</span></span>
         <span>🛡️ <span id="total-types-count">0</span></span>
     </div>
+    
     <div class="container">
-        <h1>Дошолг - Нохчийн Wordle ⚔️</h1>
+        <h1>Дошолг ⚔️</h1>
 
         <div id="settings">
             <div class="settings-row">
                 <div>
-                    <label for="word-length-select">Дешан дохалла харжа:</label>
+                    <label for="word-length-select">Дешан дохалла:</label>
                     <select id="word-length-select">
                         <option value="2-4">2-4</option>
                         <option value="5-7">5-7</option>
@@ -41,31 +42,12 @@
                 <button id="give-up-btn" class="hidden">Жоп гайта (Йолла)</button>
             </div>
         </div>
-        <div class="social-links">
-    <a href="https://t.me/xexodev" target="_blank" class="social-item tg" title="Telegram">
-        <span>TG</span>
-    </a>
-    <a href="https://www.tiktok.com/@m.xexo" target="_blank" class="social-item tt" title="TikTok">
-        <span>TT</span>
-    </a>
-    <a href="https://www.instagram.com/m.xex0" target="_blank" class="social-item inst" title="Instagram">
-        <span>INST</span>
-    </a>
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
+        
         <div id="timer-display">Хан: 0 с</div>
 
         <div id="message-area" class="hidden"></div>
         
-        <div id="game-board">
-        </div>
-
-        <audio id="type-sound" src="type.mp3" preload="auto"></audio>
-        <audio id="win-sound" src="win.mp3" preload="auto"></audio>
-        <audio id="lose-sound" src="lose.mp3" preload="auto"></audio>
+        <div id="game-board"></div>
 
         <div id="keyboard">
             <div class="keyboard-row">
@@ -113,7 +95,10 @@
             <div class="modal-content">
                 <span class="close-button">&times;</span>
                 <h2 id="modal-title"></h2>
-                <p><strong>Хаьржина дош:</strong> <span id="modal-secret-word-display"></span></p>
+                <div class="result-word-container">
+                    <p><strong>Хаьржина дош:</strong> <span id="modal-secret-word-display"></span></p>
+                    <button id="modal-translate-btn" class="mini-translate-btn hidden">Гочдан</button>
+                </div>
                 <p><strong>Мел дош чудаьккхина:</strong> <span id="modal-attempts"></span></p> 
                 <p><strong>Седарчий баьхна:</strong> <span id="modal-stars-display"></span></p>
                 <p><strong>Йайна хан:</strong> <span id="modal-time"></span></p>
@@ -126,7 +111,10 @@
             <div class="modal-content type-modal-content"> 
                 <span class="close-button">&times;</span>
                 <h2>Хьуна карийна ТАЙП!</h2>
-                <p><strong>Хаьржина дош:</strong> <span id="type-word-display"></span></p>
+                <div class="result-word-container">
+                    <p><strong>Хаьржина дош:</strong> <span id="type-word-display"></span></p>
+                    <button id="type-translate-btn" class="mini-translate-btn hidden">Гочдан</button>
+                </div>
                 <p><strong>Мел дош чудаьккхина:</strong> <span id="type-attempts"></span></p> 
                 <p><strong>Гулдина тайпанаш:</strong> <span id="type-count-display">0</span></p>
                 <p><strong>Седарчий баьхна:</strong> <span id="type-stars-display"></span></p>
@@ -135,10 +123,34 @@
                 <button id="type-restart-btn" class="restart-button">Йуха а</button>
             </div>
         </div>
+
+        <div id="translation-modal" class="modal hidden">
+            <div class="modal-content translation-content">
+                <h3 id="translation-word-title"></h3>
+                <div class="translation-body">
+                    <p id="translation-text"></p>
+                </div>
+                <button id="close-translation-btn" class="restart-button">Кхетта</button>
+            </div>
+        </div>
+
+        <div class="social-links">
+            <a href="https://t.me/xexodev" target="_blank" class="social-item tg" title="Telegram">
+                <span>TG</span>
+            </a>
+            <a href="https://www.tiktok.com/@m.xexo" target="_blank" class="social-item tt" title="TikTok">
+                <span>TT</span>
+            </a>
+            <a href="https://www.instagram.com/m.xex0" target="_blank" class="social-item inst" title="Instagram">
+                <span>INST</span>
+            </a>
+        </div>
+
+        <audio id="type-sound" src="type.mp3" preload="auto"></audio>
+        <audio id="win-sound" src="win.mp3" preload="auto"></audio>
+        <audio id="lose-sound" src="lose.mp3" preload="auto"></audio>
     </div>
     
     <script src="script.js"></script>
 </body>
-
 </html>
-
