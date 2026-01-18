@@ -1,168 +1,73 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ce">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Дошолг - Нохчийн Wordle</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ловзар</title>
+    <style>
+        /* Общие стили для центрирования контента */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6; /* Светло-серый фон */
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            max-width: 90%;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* Стили для зеленой кнопки */
+        .btn {
+            display: inline-block;
+            padding: 15px 35px;
+            background-color: #27ae60; /* Приятный зеленый цвет */
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        /* Эффект при наведении */
+        .btn:hover {
+            background-color: #219150;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+    </style>
 </head>
 <body>
-    <div id="stats-counter">
-        <span>✨ <span id="total-stars-count">0</span></span>
-        <span>🛡️ <span id="total-types-count">0</span></span>
-    </div>
-    
+
     <div class="container">
-        <h1>Дошолг ⚔️</h1>
-
-        <div id="settings">
-            <div class="settings-main-row">
-                <div class="setting-group full-width">
-                    <label>Дешан дохалла:</label>
-                    <div class="checkbox-group" id="length-checkboxes">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="word-length" value="2-4">
-                            <span>2-4</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="word-length" value="5-7" checked>
-                            <span>5-7</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="word-length" value="8-12">
-                            <span>8-12</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="word-length" value="13+">
-                            <span>13+</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="setting-group">
-                    <label for="difficulty-select">Чолхалла:</label>
-                    <select id="difficulty-select">
-                        <option value="easy">Атта</option>
-                        <option value="hard">Хала</option>
-                        <option value="combined" selected>Вовшахтоьхна</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="buttons-row">
-                <button id="start-game-btn">Ловзар доладан</button>
-                <button id="give-up-btn" class="hidden">Жоп гайта (Йолла)</button>
-            </div>
-
-            <div class="social-links-inline">
-                <a href="https://t.me/xexodev" target="_blank" class="social-item tg" title="Telegram">
-                    <span>TG</span>
-                </a>
-                <a href="https://www.tiktok.com/@m.xexo" target="_blank" class="social-item tt" title="TikTok">
-                    <span>TT</span>
-                </a>
-                <a href="https://www.instagram.com/m.xex0" target="_blank" class="social-item inst" title="Instagram">
-                    <span>INST</span>
-                </a>
-            </div>
-        </div>
+        <h1>Ловзар дехьадаьлла.<br>Кхуза хьо а дехьавала</h1>
         
-        <div id="timer-display">Хан: 0 с</div>
-
-        <div id="message-area" class="hidden"></div>
-        
-        <div id="game-board"></div>
-
-        <div id="keyboard">
-            <div class="keyboard-row">
-                <button data-key="Й">Й</button>
-                <button data-key="Ц">Ц</button>
-                <button data-key="У">У</button>
-                <button data-key="К">К</button>
-                <button data-key="Е">Е</button>
-                <button data-key="Н">Н</button>
-                <button data-key="Г">Г</button>
-                <button data-key="Ш">Ш</button>
-                <button data-key="Щ">Щ</button>
-                <button data-key="З">З</button>
-                <button data-key="Х">Х</button>
-                <button data-key="Ъ">Ъ</button>
-            </div>
-            <div class="keyboard-row">
-                <button data-key="Ф">Ф</button>
-                <button data-key="Ы">Ы</button>
-                <button data-key="В">В</button>
-                <button data-key="А">А</button>
-                <button data-key="П">П</button>
-                <button data-key="Р">Р</button>
-                <button data-key="О">О</button>
-                <button data-key="Л">Л</button>
-                <button data-key="Д">Д</button>
-                <button data-key="Ж">Ж</button>
-                <button data-key="Э">Э</button>
-            </div>
-            <div class="keyboard-row">
-                <button data-key="Delete" class="wide-button" id="delete-key-color">←</button>
-                <button data-key="Ч">Ч</button>
-                <button data-key="С">С</button>
-                <button data-key="М">М</button>
-                <button data-key="И">И</button>
-                <button data-key="Т">Т</button>
-                <button data-key="Ь">Ь</button>
-                <button data-key="Б">Б</button>
-                <button data-key="I">Ӏ</button>
-                <button data-key="Enter" class="wide-button" id="enter-key-color">Чудаккха</button>
-            </div>
-        </div>
-    
-        <div id="results-modal" class="modal hidden">
-            <div class="modal-content">
-                <span class="close-button">&times;</span>
-                <h2 id="modal-title"></h2>
-                <div class="result-word-container">
-                    <p><strong>Хаьржина дош:</strong> <span id="modal-secret-word-display"></span></p>
-                    <button id="modal-translate-btn" class="mini-translate-btn hidden">Гочдан</button>
-                </div>
-                <p><strong>Мел дош чудаьккхина:</strong> <span id="modal-attempts"></span></p> 
-                <p><strong>Седарчий баьхна:</strong> <span id="modal-stars-display"></span></p>
-                <p><strong>Йайна хан:</strong> <span id="modal-time"></span></p>
-                
-                <button id="restart-modal-btn" class="restart-button">Керла ловзар</button>
-            </div>
-        </div>
-        
-        <div id="type-win-modal" class="modal hidden">
-            <div class="modal-content type-modal-content"> 
-                <span class="close-button">&times;</span>
-                <h2>Хьуна карийна ТАЙП!</h2>
-                <div class="result-word-container">
-                    <p><strong>Хаьржина дош:</strong> <span id="type-word-display"></span></p>
-                    <button id="type-translate-btn" class="mini-translate-btn hidden">Гочдан</button>
-                </div>
-                <p><strong>Мел дош чудаьккхина:</strong> <span id="type-attempts"></span></p> 
-                <p><strong>Гулдина тайпанаш:</strong> <span id="type-count-display">0</span></p>
-                <p><strong>Седарчий баьхна:</strong> <span id="type-stars-display"></span></p>
-                <p><strong>Йайна хан:</strong> <span id="type-time"></span></p>
-                
-                <button id="type-restart-btn" class="restart-button">Йуха а</button>
-            </div>
-        </div>
-
-        <div id="translation-modal" class="modal hidden">
-            <div class="modal-content translation-content">
-                <h3 id="translation-word-title"></h3>
-                <div class="translation-body">
-                    <p id="translation-text"></p>
-                </div>
-                <button id="close-translation-btn" class="restart-button">Кхетта</button>
-            </div>
-        </div>
-
-        <audio id="type-sound" src="type.mp3" preload="auto"></audio>
-        <audio id="win-sound" src="win.mp3" preload="auto"></audio>
-        <audio id="lose-sound" src="lose.mp3" preload="auto"></audio>
+        <a href="https://dosholg.web.app" class="btn">
+            dosholg.web.app
+        </a>
     </div>
-    
-    <script src="script.js"></script>
+
 </body>
 </html>
